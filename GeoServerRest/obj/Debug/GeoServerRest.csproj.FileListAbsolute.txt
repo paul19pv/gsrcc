@@ -1,5 +1,0 @@
-D:\Desenvolvimento\vsGeoServer\GeoServerRest\GeoServerRest\obj\Debug\ResolveAssemblyReference.cache
-D:\Desenvolvimento\vsGeoServer\GeoServerRest\GeoServerRest\bin\Debug\GeoServerRest.dll
-D:\Desenvolvimento\vsGeoServer\GeoServerRest\GeoServerRest\bin\Debug\GeoServerRest.pdb
-D:\Desenvolvimento\vsGeoServer\GeoServerRest\GeoServerRest\obj\Debug\GeoServerRest.dll
-D:\Desenvolvimento\vsGeoServer\GeoServerRest\GeoServerRest\obj\Debug\GeoServerRest.pdb
