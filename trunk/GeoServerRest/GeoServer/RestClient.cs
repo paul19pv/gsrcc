@@ -46,12 +46,6 @@ namespace GeoServerRest.GeoServer
             return password != null && username != null;
         }
 
-        public Boolean SetDefaultWs(String wsName) {
-            String xml = "<workspace><name>" + wsName + "</name></workspace>";
-
-            return 200 == sendRESTint(METHOD_PUT, "/workspaces/default.xml", xml);
-        }
-
         private HttpWebResponse sendREST(String method, String urlAppend, byte[] postData, String contentType, String accept) {
             Boolean doOut = METHOD_DELETE != method;
             // boolean doIn = true; // !doOut
@@ -73,10 +67,13 @@ namespace GeoServerRest.GeoServer
             
             req.ContentLength = postData.Length;
 
-            // Send the request:
-            using (Stream post = req.GetRequestStream())
+            if (postData.Length > 0)
             {
-                post.Write(postData, 0, postData.Length);
+                // Send the request:
+                using (Stream post = req.GetRequestStream())
+                {
+                    post.Write(postData, 0, postData.Length);
+                }
             }
 
             HttpWebResponse resp = null;
@@ -116,7 +113,12 @@ namespace GeoServerRest.GeoServer
         }
 
         public int sendRESTint(String method, String urlEncoded, String postData, String contentType, String accept) {
-            return sendRESTint(method, urlEncoded, UTF8Encoding.UTF8.GetBytes(postData), contentType, accept);
+            byte[] bPostData = new byte[0];
+            if (postData != null)
+            {
+                bPostData = UTF8Encoding.UTF8.GetBytes(postData);
+            }
+            return sendRESTint(method, urlEncoded, bPostData, contentType, accept);
         }
 
         public int sendRESTint(String method, String url, String xmlPostContent) {
@@ -137,7 +139,12 @@ namespace GeoServerRest.GeoServer
         }
 
         public String sendRESTlocation(String method, String urlEncoded, String postData, String contentType, String accept) {
-            return sendRESTlocation(method, urlEncoded, UTF8Encoding.UTF8.GetBytes(postData), contentType, accept);
+            byte[] bPostData = new byte[0];
+            if (postData != null)
+            {
+                bPostData = UTF8Encoding.UTF8.GetBytes(postData);
+            }
+            return sendRESTlocation(method, urlEncoded, bPostData, contentType, accept);
         }
 
         /**
@@ -170,7 +177,11 @@ namespace GeoServerRest.GeoServer
         }
 
         public String sendRESTstring(String method, String urlEncoded, String postData, String contentType, String accept) {
-            return sendRESTstring(method, urlEncoded, UTF8Encoding.UTF8.GetBytes(postData), contentType, accept);
+            byte[] bPostData = new byte[0];
+            if (postData != null) {
+                bPostData = UTF8Encoding.UTF8.GetBytes(postData);
+            }
+            return sendRESTstring(method, urlEncoded, bPostData, contentType, accept);
         }
 
         public String sendRESTstring(String method, String url, String xmlPostContent) {
@@ -705,7 +716,7 @@ namespace GeoServerRest.GeoServer
                 foreach (String lName in getLayerNames()) {
                     String xml = sendRESTstring(METHOD_GET, "/layers/" + lName, null);
                     // System.out.println(xml);
-                    Regex r = new Regex(layersUsingStoreRegEx, RegexOptions.IgnoreCase);
+                    Regex r = new Regex(layersUsingStoreRegEx, RegexOptions.Singleline);
 
                     Match m = r.Match(xml);
                     if (m.Success)
@@ -756,12 +767,12 @@ namespace GeoServerRest.GeoServer
         
         private List<String> parseXmlWithregEx(String xml, String pattern) {
             List<String> list = new List<String>();
-            Regex nameMatcher = new Regex(pattern, RegexOptions.IgnoreCase);
+            Regex nameMatcher = new Regex(pattern, RegexOptions.Singleline);
             Match m = nameMatcher.Match(xml);
 
             while (m.Success) 
             {
-                String name = nameMatcher.GetGroupNames()[1];
+                String name = m.Groups[1].Value;
                 list.Add(name.Trim());
                 m = m.NextMatch();
             }
